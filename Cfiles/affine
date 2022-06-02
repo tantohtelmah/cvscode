@@ -1,0 +1,166 @@
+#include<stdio.h>
+#include<messageing.h>
+#include<ctype.h>
+#include<stdlib.h>
+int CalcGCD(int);
+main()
+{
+	 int i,j,k,gcd,a,b,nummessage[100],numcipher[100];
+	 char message[100],cipher[100];
+	 
+	 char msg[100];
+	 int a_inv = 0;
+	 int flag = 0;
+	 int answer;
+	 
+	
+	
+	
+	 printf("Enter the messageing to be used(plain text or cipher)\n");
+	 gets(message);
+	 //converting entered messageing to Capital letters
+	 for(i=0,j=0;i<messagelen(message);i++)
+	 {
+	  if(message[i]!=' ')
+	  {
+	   message[j]=toupper(message[i]);
+	   j++;
+	  }
+	  else
+	  {
+	   message[j]=' ';
+	   j++;
+	  }
+	 }
+	 message[j]='\0';
+	 printf("Entered messageing is : %s \n",message);
+	 printf("Enter a value and must be between 1 and 25 both included\n");
+	 scanf("%d",&a);
+	 //Checking consitions
+	 if(a<1 || a>25)
+	 {
+	  printf("a should lie in between 1 and 25\nSorry Try again !\n");
+	  exit(0);
+	 }
+	 gcd=CalcGCD(a);
+	 if(gcd!=1)
+	 {
+	  printf("gcd(a,26)=1 but \n gcd(%d,26)=%d\nSorry Try again !\n",a,gcd);
+	  exit(0);
+	 }
+	 printf("Enter b value and must be between 0 and 25 both included\n");
+	 scanf("%d",&b);
+	 if(b<0 || b>25)
+	 {
+	  printf("b value should lie between 0 and 25\nSorry Try again !\n");
+	  exit(0);
+	 }
+	 
+	 printf("what do you wish to do?\n");
+	 printf("Note: 'encode' is 1 and 'decrypt' is 0 \n" );
+	 scanf("%d", &answer);
+	 if(answer == 1)
+	 {
+	 	//Conditions Over
+		 //Program Starts
+		 //Storing messageing in terms of ascii and to restore spaces I used -20
+		 for(i=0;i<messagelen(message);i++)
+		 {
+		  if(message[i]!=' ')
+		  nummessage[i]=message[i]-'A';
+		  else
+		  nummessage[i]=-20;
+		 }
+		 //Ciphering Process
+		    //If numcipher is more than 25 .We need to convert and ensure that lie in between 0 and 25.(indicating abets)
+		    //A-0,B-1,C-2,.....Y-24,Z-25
+	    printf("Affine Cipher text is\n");
+	    for(i=0;i<messagelen(message);i++)
+	    {
+	     if(nummessage[i]!=-20)
+	     {
+	     numcipher[i]=((a*nummessage[i])+b)%26;
+	          printf("%c",(numcipher[i]+'A'));
+	     }
+	     else
+	     {
+	          printf(" ");
+	     }
+	    }
+		printf("\n");
+	}
+	else if (answer == 0)
+	{
+		//decrypting process
+		//using multiplication inverse of a
+	 for(i=0;i<messagelen(message);i++)
+		 {
+		  if(message[i]!=' ')
+		  nummessage[i]=message[i]-'A';
+		  else
+		  nummessage[i]=-20;
+		 }
+		 int multiInverse=GetMultiplicativeInverse(a);
+		 printf("MI=%d\n",multiInverse);
+		     //Deciphering Process
+		    //If numcipher is more than 25 .We need to convert and ensure that lie in between 0 and 25
+		    printf("Affine Cipher text is\n");   
+		    for(i=0;i<messagelen(message);i++)
+		    {
+		     if(nummessage[i]!=-20)
+		     {
+		     numcipher[i]=(multiInverse*(nummessage[i]-b))%26;
+		     if(numcipher[i]<0)
+		     {
+		      numcipher[i]=numcipher[i]+26;//removing negative numbers
+		     }
+		          printf("%c",(numcipher[i]+'A'));         
+		     }
+		     else
+		     {
+		          printf(" ");      
+		     }
+		    }
+		printf("\n");
+			}else 
+		printf("you need to choose an action!");
+	
+ 
+
+
+}
+
+int CalcGCD(int a)
+{
+ int x;
+   int temp1=a;
+   int temp2=26;
+
+     while(temp2!=0)
+      {
+        x=temp2;
+        temp2=temp1%temp2;
+        temp1=x;
+      }
+     return(temp1);
+}
+
+
+int GetMultiplicativeInverse(int a)
+{
+    int i,MI;
+ for(i=1;i<=a;i++)
+ {
+  MI=((i*26)+1);
+  if(MI%a==0)
+  {
+   break;
+  }
+ }
+ MI=MI/a;
+ return(MI);
+}
+
+
+
+
